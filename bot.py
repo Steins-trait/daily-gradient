@@ -28,10 +28,19 @@ def create_gradient_image():
     img.save(filename)
     return filename, rgb_to_hex(start), rgb_to_hex(end)
 
-def tweet_image() -> None:
+def tweet_image():
     filename, start_hex, end_hex = create_gradient_image()
     tweet = f"Today's gradient: #{start_hex} → #{end_hex}"
-    
+
+    # Auth with OAuth2 + Bearer for v2 endpoint
+    client = tweepy.Client(
+        consumer_key=os.getenv("TWITTER_API_KEY"),
+        consumer_secret=os.getenv("TWITTER_API_SECRET"),
+        access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+        access_token_secret=os.getenv("TWITTER_ACCESS_SECRET")
+    )
+
+    # Upload media first
     auth = tweepy.OAuth1UserHandler(
         os.getenv("TWITTER_API_KEY"),
         os.getenv("TWITTER_API_SECRET"),
@@ -39,7 +48,10 @@ def tweet_image() -> None:
         os.getenv("TWITTER_ACCESS_SECRET")
     )
     api = tweepy.API(auth)
-    api.update_status_with_media(status=tweet, filename=filename)
+    media = api.media_upload(filename)
+
+    # Now post tweet with media ID using v2 client
+    client.create_tweet(text=tweet, media_ids=[media.media_id_string])
 
 if __name__ == "__main__":
     tweet_image()
