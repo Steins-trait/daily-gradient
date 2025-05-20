@@ -41,16 +41,17 @@ def tweet_image():
     )
     api = tweepy.API(auth)
     media = api.media_upload(filename)
+    api.update_status(status=tweet, media_ids=[media.media_id_string])
 
-    # Use Client (v2) for tweeting with media
-    client = tweepy.Client(
-        consumer_key=os.getenv("TWITTER_API_KEY"),
-        consumer_secret=os.getenv("TWITTER_API_SECRET"),
-        access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
-        access_token_secret=os.getenv("TWITTER_ACCESS_SECRET")
-    )
-    client.create_tweet(text=tweet, media_ids=[media.media_id_string])
+    # # Use Client (v2) for tweeting with media
+    # client = tweepy.Client(
+    #     consumer_key=os.getenv("TWITTER_API_KEY"),
+    #     consumer_secret=os.getenv("TWITTER_API_SECRET"),
+    #     access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+    #     access_token_secret=os.getenv("TWITTER_ACCESS_SECRET")
+    # )
+    # client.create_tweet(text=tweet, media_ids=[media.media_id_string])
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     tweet_image()
