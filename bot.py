@@ -25,13 +25,16 @@ def create_gradient_image():
     
     date = datetime.now().strftime("%Y-%m-%d")
     filename = f"gradient_{date}_{rgb_to_hex(start)}_{rgb_to_hex(end)}.png"
-    img.save(filename)
-    return filename, rgb_to_hex(start), rgb_to_hex(end)
+    image_dir = "gradients/"
+    image_path = f"{image_dir}/{filename}"
+    img.save(image_path)
+    return image_path, rgb_to_hex(start), rgb_to_hex(end)
 
 def tweet_image():
     filename, start_hex, end_hex = create_gradient_image()
     tweet = f"Today's gradient: #{start_hex} → #{end_hex}"
 
+    # OAuth 1.0a for media upload
     auth = tweepy.OAuth1UserHandler(
         os.getenv("TWITTER_API_KEY"),
         os.getenv("TWITTER_API_SECRET"),
@@ -39,12 +42,21 @@ def tweet_image():
         os.getenv("TWITTER_ACCESS_SECRET")
     )
     api = tweepy.API(auth)
-
-    # Upload image and get media ID
     media = api.media_upload(filename)
 
-    # Post tweet with media
-    api.update_status(status=tweet, media_ids=[media.media_id_string])
+    # OAuth 2.0 Client for tweet creation (with user_auth=True)
+    client = tweepy.Client(
+        consumer_key=os.getenv("TWITTER_API_KEY"),
+        consumer_secret=os.getenv("TWITTER_API_SECRET"),
+        access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+        access_token_secret=os.getenv("TWITTER_ACCESS_SECRET")
+    )
+
+    client.create_tweet(
+        text=tweet,
+        media_ids=[media.media_id_string],
+        user_auth=True
+    )
 
 if __name__ == "__main__":
     tweet_image()
