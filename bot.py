@@ -32,7 +32,7 @@ def create_gradient_image():
 
 def tweet_image():
     filename, start_hex, end_hex = create_gradient_image()
-    tweet = f"Today's gradient: #{start_hex} → #{end_hex}"
+    tweet = f"#{start_hex} → #{end_hex}"
 
     # OAuth 1.0a for media upload
     auth = tweepy.OAuth1UserHandler(
