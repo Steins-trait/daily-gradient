@@ -63,4 +63,4 @@ def tweet_image():
     )
 
 if __name__ == "__main__":
-    #tweet_image()
+    tweet_image()
