@@ -1,7 +1,7 @@
 import os
 import random
 from datetime import datetime
-from PIL import Image
+from PIL import Image, ImageOps
 import tweepy
 
 def random_color():
@@ -23,11 +23,15 @@ def create_gradient_image():
         for y in range(height):
             img.putpixel((x, y), (r, g, b))
     
+
     date = datetime.now().strftime("%Y-%m-%d")
     filename = f"gradient_{date}_{rgb_to_hex(start)}_{rgb_to_hex(end)}.png"
     image_dir = "gradients/"
     image_path = f"{image_dir}/{filename}"
     img.save(image_path)
+    image = Image.open(image_path)
+    bordered = ImageOps.expand(image, border=40, fill=(0, 0, 0))
+    bordered.save(image_path)
     return image_path, rgb_to_hex(start), rgb_to_hex(end)
 
 def tweet_image():
@@ -59,4 +63,4 @@ def tweet_image():
     )
 
 if __name__ == "__main__":
-    tweet_image()
+    #tweet_image()
