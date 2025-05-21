@@ -29,9 +29,9 @@ def create_gradient_image():
     image_dir = "gradients/"
     image_path = f"{image_dir}/{filename}"
     img.save(image_path)
-    image = Image.open(image_path)
-    bordered = ImageOps.expand(image, border=40, fill=(0, 0, 0))
-    bordered.save(image_path)
+    # image = Image.open(image_path)
+    # bordered = ImageOps.expand(image, border=40, fill=(0, 0, 0))
+    # bordered.save(image_path)
     return image_path, rgb_to_hex(start), rgb_to_hex(end)
 
 def tweet_image():
